@@ -1,6 +1,5 @@
 package ru.kata.spring.boot_security.demo.model;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,51 +7,56 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
-
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "last_name")
-    private String lastname;
-    @Column(name = "age")
-    private int age;
-    @Column(name = "email", unique = true)
-    private String email;
+
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Column(name = "email")
+    private String email;
+
+    @ManyToMany(fetch=FetchType.LAZY)
+    @JoinTable(name="users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
-    public User() {
-    }
+    public User() {}
 
-    public User(String name, String lastname, int age, String email, String password, List<Role> roles) {
-        this.name = name;
-        this.lastname = lastname;
-        this.age = age;
-        this.email = email;
+    public User(String userName, String password, String email, List<Role> roles) {
+        this.username = userName;
         this.password = password;
+        this.email = email;
         this.roles = roles;
     }
 
-    public User(Long id, String name, String lastname, int age, String email, String password) {
+    public User(Long id, String userName, String password, String email, List<Role> roles) {
         this.id = id;
-        this.name = name;
-        this.lastname = lastname;
-        this.age = age;
-        this.email = email;
+        this.username = userName;
         this.password = password;
+        this.email = email;
+        this.roles = roles;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override
@@ -90,36 +94,8 @@ public class User implements UserDetails {
         return true;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -130,10 +106,6 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public List<Role> getRoles() {
         return roles;
     }
@@ -142,29 +114,14 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        User user = (User) o;
-//        return id == user.id && age == user.age && Objects.equals(name, user.name) && Objects.equals(lastname, user.lastname) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id, name, lastname, age, email, password);
-//    }
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", age=" + age +
-                ", email='" + email + '\'' +
+        return                 "id=" + id +
+                ", userName='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", roles=" + getRoles() +
-                '}';
+                ", email='" + email + '\'' +
+                ", roles=" + getRoles();
     }
 }
+
