@@ -19,7 +19,7 @@ public class UserDaoImpl implements UserDaO {
                 .getResultList().stream().findAny().orElse(null);
     }
 
-    public  void delete(Long id) {
+    public void delete(Long id) {
         User us = em.find(User.class, id);
         em.remove(us);
     }

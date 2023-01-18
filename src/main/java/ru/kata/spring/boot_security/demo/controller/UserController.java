@@ -9,6 +9,7 @@ import ru.kata.spring.boot_security.demo.dao.service.UserServiceImpl;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,9 +62,16 @@ public class UserController {
         return "update";
     }
 
-    @PostMapping("update")
-    public String updateUser(@ModelAttribute User user) {
+    @PutMapping("/{id}")
+    public String updateUser(@ModelAttribute("user") User user) {
+
+        List<String> lsr = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
+        List<Role> liRo = roleService.listByRole(lsr);
+        user.setRoles(liRo);
+
         userService.update(user);
+
+
         return "redirect:/admin";
     }
 }
